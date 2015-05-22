@@ -21,14 +21,16 @@
     <core-animated-pages id="wordscontainer" transitions="cross-fade-all">
         <template repeat="{{word in words}}">
           <section>     
-            <div layout vertical center center-justified class="fullheight">
+            <div layout vertical center center-justified class="fullheight" hidden?="{{showTranslation}}">
               {{word.original}}
-              <core-icon icon="toc" style="width: 48px; height: 48px;" on-click="{{reveal}}">
-              </core-icon>
-              <p hidden>
-                {{word.translation}}
-              </p>
+              <paper-icon-button icon="toc" on-click="{{reveal}}"></paper-icon-button>
              </div>
+             
+             <div layout vertical center center-justified class="fullheight" hidden?="{{!showTranslation}}">
+              {{word.translation}}
+              <paper-icon-button icon="toc" on-click="{{reveal}}"></paper-icon-button>
+             </div>
+
           </section>
        </template>
     </core-animated-pages>
@@ -40,6 +42,7 @@
       var initialXPos = 0;
       var touchStart = 0;
       var wordsContainer;
+      var translationVisible = false;
       
       var getGesturePointFromEvent = function (evt) {
         var point = {};
@@ -59,18 +62,18 @@
     
       Polymer({
         words: [],
+        showTranslation: false,
         nextClick: function(event, detail, sender) {
           sender.selectNext(true);
         },
-        handleGestureStart: function(inEvent) {
-          console.log(inEvent)
-        },
         reveal: function() {
-          console.log('reveal');
+          this.showTranslation = !this.showTranslation;
+          translationVisible = this.showTranslation;
         },
         domReady: function() {  
           var n = this.$.container;
           wordsContainer = this.$.wordscontainer;
+          translationVisible = this.showTranslation;
           
           PolymerGestures.addEventListener(n, "down", this.handleGestureStart);
           PolymerGestures.addEventListener(n, "track", this.handleGestureMove);
@@ -103,7 +106,7 @@
           
           var currentXPos = getGesturePointFromEvent(evt).x;
           var diff = Math.abs(initialXPos - currentXPos);
-          if ( timeDiff > 200 && diff > 50) {
+          if ( !translationVisible && timeDiff > 200 && diff > 50) {
              if ( lastXPos > initialXPos ) {
                 wordsContainer.selectNext(true);
               } else {
