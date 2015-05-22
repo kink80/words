@@ -24,12 +24,11 @@
     <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
     <link rel="import" href="bower_components/paper-item/paper-item.html">
     <link rel="import" href="bower_components/paper-menu-button/paper-menu-button.html">
+    <link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
     <link rel="import" href="bower_components/font-roboto/roboto.html">
 
     <link rel="import" href="elements/lessonslist.html">
     <link rel="import" href="elements/pages-words.html">
-    
-    
   </head>
   <body>
     <core-drawer-panel id="drawerPanel">
@@ -53,7 +52,9 @@
         </paper-dropdown>
       </paper-menu-button>
     </core-toolbar>
-    <pages-words words="[]"></pages-words>
+    <pages-words words="[]">
+      <paper-spinner active></paper-spinner>
+    </pages-words>
    </core-header-panel>
   </core-drawer-panel>
   </body>

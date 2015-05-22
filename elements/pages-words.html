@@ -1,13 +1,15 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
-<polymer-element name="pages-words" attributes="words">
+<polymer-element name="pages-words" attributes="loading,words">
   <template>
     <style>
-       div.fullheight { 
+       .fullheight { 
          height: 100%;
+       }
+       .grey {
          background-color: grey;
        }
-       core-animated-pages {
+       core-animated-pages.words {
                 position: absolute;
                 top: 0;
                 right: 0;
@@ -18,17 +20,24 @@
            }
     </style>
     <div id="container">
-    <core-animated-pages id="wordscontainer" transitions="cross-fade-all">
+      <core-animated-pages class="fullheight" id="loadindicator" horizontal center-justified layout hidden?="{{!loading}}">
+        <section>     
+            <div layout vertical center center-justified class="fullheight" >
+              <paper-spinner active></paper-spinner>
+             </div>
+          </section>
+      </core-animated-pages>
+    <core-animated-pages id="wordscontainer" transitions="cross-fade-all" class="words" hidden?="{{loading}}">
         <template repeat="{{word in words}}">
           <section>     
-            <div layout vertical center center-justified class="fullheight" hidden?="{{showTranslation}}">
+            <div layout vertical center center-justified class="fullheight grey" hidden?="{{showTranslation}}">
               {{word.original}}
-              <paper-icon-button icon="toc" on-click="{{reveal}}"></paper-icon-button>
+              <paper-icon-button icon="toc" on-tap="{{reveal}}"></paper-icon-button>
              </div>
              
-             <div layout vertical center center-justified class="fullheight" hidden?="{{!showTranslation}}">
+             <div layout vertical center center-justified class="fullheight grey" hidden?="{{!showTranslation}}">
               {{word.translation}}
-              <paper-icon-button icon="toc" on-click="{{reveal}}"></paper-icon-button>
+              <paper-icon-button icon="toc" on-tap="{{reveal}}"></paper-icon-button>
              </div>
 
           </section>
@@ -63,6 +72,7 @@
       Polymer({
         words: [],
         showTranslation: false,
+        loading: false,
         nextClick: function(event, detail, sender) {
           sender.selectNext(true);
         },

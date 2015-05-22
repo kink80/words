@@ -3,12 +3,24 @@
 
 <polymer-element name="menu-lessonlist" >
   <template>
-    <core-ajax id="lessonsajax" url="../json/lessonlist.json" handleAs="json" auto response="{{resp}}"></core-ajax>
-    <core-ajax id="wordsajax" handleAs="json" auto on-core-response="{{ajaxResponse}}"></core-ajax> 
+    <core-ajax id="lessonsajax" 
+               url="https://run.blockspring.com/api_v2/blocks/5496087e640fe656362d754b4d6cd7e6?api_key=br_2967_465b62fbba92324e23358aa9a590600f14fa9c66"
+               body='{"query":"SELECT B,C", "url":"https://docs.google.com/spreadsheets/d/1OPSsdUclv4R-62SFtJB5GV6T6cLweyHoaQvbzIMizo4/edit#gid=0"}'
+               contentType="application/json"
+               method="POST"
+               handleAs="json" 
+               auto 
+               response="{{resp}}"></core-ajax>
+    <core-ajax id="wordsajax" 
+      handleAs="json" 
+      contentType="application/json"
+      method="POST"
+      auto 
+      on-core-response="{{ajaxResponse}}"></core-ajax> 
     
     <core-menu class='menu' on-core-select="{{selectAction}}">
-    <template repeat="{{lesson in resp.lessons}}">
-      <paper-item url="./json/{{lesson.url}}" label="{{lesson.name}}">{{lesson.name}}</paper-item>
+    <template repeat="{{lesson in resp.data}}">
+      <paper-item url="{{lesson.url}}" label="{{lesson.name}}">{{lesson.name}}</paper-item>
     </template>
     </core-menu>
   </template>
@@ -18,14 +30,22 @@
       },
       selectAction: function(e, detail) {
         if (detail.isSelected) {
-          this.$.wordsajax.url = detail.item.getAttribute('url');
+          var wordsElem = document.querySelector("pages-words");
+          wordsElem.loading = true;
+          
+          var body = {
+            "query": "SELECT B,C",
+            "url": detail.item.getAttribute('url')
+          };
+          this.$.wordsajax.body = JSON.stringify(body);
+          this.$.wordsajax.url = "https://run.blockspring.com/api_v2/blocks/5496087e640fe656362d754b4d6cd7e6?api_key=br_2967_465b62fbba92324e23358aa9a590600f14fa9c66";
         }
       },
       ajaxResponse: function(e, detail) {
         var wordsElem = document.querySelector("pages-words");
-        if ( wordsElem ) {
-          wordsElem.words = detail.response.words;
-        }
+        wordsElem.words = detail.response.data;
+        
+         wordsElem.loading = false;
       }
     });
   </script>
