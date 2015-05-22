@@ -1,6 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
-<polymer-element name="pages-words" attributes="lessonurl">
+<polymer-element name="pages-words" attributes="words">
   <template>
     <style>
        div.fullheight { 
@@ -17,15 +17,13 @@
                 overflow: hidden;
            }
     </style>
-    <core-ajax url="{{lessonurl}}" handleAs="json" auto response="{{resp}}"></core-ajax>
-    <swipe-container id="container" touch-action="none">
+    <div id="container">
     <core-animated-pages transitions="cross-fade-all">
-        <template repeat="{{word in resp.words}}">
+        <template repeat="{{word in words}}">
           <section>     
             <div layout vertical center center-justified class="fullheight">
               {{word.original}}
               <core-icon icon="toc" style="width: 48px; height: 48px;" on-click="{{reveal}}">
-               
               </core-icon>
               <p hidden>
                 {{word.translation}}
@@ -34,10 +32,11 @@
           </section>
        </template>
     </core-animated-pages>
-    </swipe-container>
+    </div>
   </template>
   <script>
     Polymer({
+      words: [],
       nextClick: function(event, detail, sender) {
         sender.selectNext(true);
       },
@@ -46,6 +45,28 @@
       },
       reveal: function() {
         console.log('reveal');
+      },
+      domReady: function() {  
+        var n = this.$.container;
+        
+        PolymerGestures.addEventListener(n, "down", this.handleGestureStart);
+        PolymerGestures.addEventListener(n, "track", this.handleGestureStart);
+        PolymerGestures.addEventListener(n, "up", this.handleGestureStarthandleGestureStart);
+        PolymerGestures.addEventListener(n, "mouseleave", this.handleGestureStart);
+        
+        
+      },
+      detached: function() {
+        var n = this.$.container;
+        
+        PolymerGestures.removeEventListener(n, "up", this.handleGestureStart);
+        PolymerGestures.removeEventListener(n, "down", this.handleGestureStart);
+        PolymerGestures.removeEventListener(n, "track", this.handleGestureStart);
+        PolymerGestures.removeEventListener(n, "mouseleave", this.handleGestureStart);
+        
+      },
+      handleGestureStart: function(inEvent) {
+        console.log(inEvent)
       }
     });
   </script>
