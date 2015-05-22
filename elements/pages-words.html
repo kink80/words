@@ -18,7 +18,7 @@
            }
     </style>
     <div id="container">
-    <core-animated-pages transitions="cross-fade-all">
+    <core-animated-pages id="wordscontainer" transitions="cross-fade-all">
         <template repeat="{{word in words}}">
           <section>     
             <div layout vertical center center-justified class="fullheight">
@@ -35,39 +35,89 @@
     </div>
   </template>
   <script>
-    Polymer({
-      words: [],
-      nextClick: function(event, detail, sender) {
-        sender.selectNext(true);
-      },
-      handleGestureStart: function(inEvent) {
-        console.log(inEvent)
-      },
-      reveal: function() {
-        console.log('reveal');
-      },
-      domReady: function() {  
-        var n = this.$.container;
+    (function() {
+      var lastXPos = 0;
+      var initialXPos = 0;
+      var touchStart = 0;
+      var wordsContainer;
+      
+      var getGesturePointFromEvent = function (evt) {
+        var point = {};
+
+        if(evt.targetTouches) {
+          // Prefer Touch Events
+          point.x = evt.targetTouches[0].clientX;
+          point.y = evt.targetTouches[0].clientY;
+        } else {
+          // Either Mouse event or Pointer Event
+          point.x = evt.clientX;
+          point.y = evt.clientY;
+        }
+
+        return point;
+      };
+    
+      Polymer({
+        words: [],
+        nextClick: function(event, detail, sender) {
+          sender.selectNext(true);
+        },
+        handleGestureStart: function(inEvent) {
+          console.log(inEvent)
+        },
+        reveal: function() {
+          console.log('reveal');
+        },
+        domReady: function() {  
+          var n = this.$.container;
+          wordsContainer = this.$.wordscontainer;
+          
+          PolymerGestures.addEventListener(n, "down", this.handleGestureStart);
+          PolymerGestures.addEventListener(n, "track", this.handleGestureMove);
+          PolymerGestures.addEventListener(n, "up", this.handleGestureEnd);
+        },
+        detached: function() {
+          var n = this.$.container;
+          
+          PolymerGestures.removeEventListener(n, "down", this.handleGestureStart);
+          PolymerGestures.removeEventListener(n, "track", this.handleGestureMove);
+          PolymerGestures.removeEventListener(n, "up", this.handleGestureEnd);
+        },
+        handleGestureStart: function(evt) {
+          evt.preventDefault();
+
+          var point = getGesturePointFromEvent(evt);
+          initialXPos = point.x;
+          
+          touchStart = evt.timeStamp;
+        },
+        handleGestureEnd: function(evt) {
+          evt.preventDefault();
+          
+          if(evt.targetTouches && evt.targetTouches.length > 0) {
+           return;
+          }
+          
+          var touchEnd = evt.timeStamp;
+          var timeDiff = Math.abs(touchStart - touchEnd);
+          
+          var currentXPos = getGesturePointFromEvent(evt).x;
+          var diff = Math.abs(initialXPos - currentXPos);
+          if ( timeDiff > 200 && diff > 50) {
+             if ( lastXPos > initialXPos ) {
+                wordsContainer.selectNext(true);
+              } else {
+                wordsContainer.selectPrevious(true);
+              } 
+          }
+        },
+        handleGestureMove: function(evt) {
+          evt.preventDefault();
         
-        PolymerGestures.addEventListener(n, "down", this.handleGestureStart);
-        PolymerGestures.addEventListener(n, "track", this.handleGestureStart);
-        PolymerGestures.addEventListener(n, "up", this.handleGestureStarthandleGestureStart);
-        PolymerGestures.addEventListener(n, "mouseleave", this.handleGestureStart);
-        
-        
-      },
-      detached: function() {
-        var n = this.$.container;
-        
-        PolymerGestures.removeEventListener(n, "up", this.handleGestureStart);
-        PolymerGestures.removeEventListener(n, "down", this.handleGestureStart);
-        PolymerGestures.removeEventListener(n, "track", this.handleGestureStart);
-        PolymerGestures.removeEventListener(n, "mouseleave", this.handleGestureStart);
-        
-      },
-      handleGestureStart: function(inEvent) {
-        console.log(inEvent)
-      }
-    });
+          var point = getGesturePointFromEvent(evt);
+          lastXPos = point.x;
+        }
+      });
+    })();
   </script>
 </polymer-element>
