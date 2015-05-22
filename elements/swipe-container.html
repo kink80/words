@@ -1,0 +1,31 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<polymer-element name="swipe-container">
+  <template>
+  </template>
+  <script>
+    Polymer({
+      domReady: function() {  
+        var n = document.querySelector("#container");
+        /*
+        PolymerGestures.addEventListener(n, "down", this.handleGestureStart);
+        PolymerGestures.addEventListener(n, "track", this.handleGestureStart);
+        PolymerGestures.addEventListener(n, "up", this.handleGestureStarthandleGestureStart);
+        PolymerGestures.addEventListener(n, "mouseleave", this.handleGestureStart);
+        */
+      },
+      detached: function() {
+        var n = document.querySelector("#container");
+        /*
+        PolymerGestures.removeEventListener(n, "up", this.handleGestureStart);
+        PolymerGestures.removeEventListener(n, "down", this.handleGestureStart);
+        PolymerGestures.removeEventListener(n, "track", this.handleGestureStart);
+        PolymerGestures.removeEventListener(n, "mouseleave", this.handleGestureStart);
+        */
+      },
+      handleGestureStart: function(inEvent) {
+        console.log(inEvent)
+      }
+    });
+  </script>
+</polymer-element>

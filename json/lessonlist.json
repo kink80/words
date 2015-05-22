@@ -1,0 +1,7 @@
+{
+  "lessons": [
+    {"name": "Lesson 1", "url":"lesson1.json"},
+    {"name": "Lesson 2", "url":"lesson2.json"},
+    {"name": "Lesson 3", "url":"lesson3.json"}
+  ]
+}

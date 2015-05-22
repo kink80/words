@@ -1,0 +1,52 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<polymer-element name="pages-words" attributes="lessonurl">
+  <template>
+    <style>
+       div.fullheight { 
+         height: 100%;
+         background-color: grey;
+       }
+       core-animated-pages {
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                font-size: 72px;
+                overflow: hidden;
+           }
+    </style>
+    <core-ajax url="{{lessonurl}}" handleAs="json" auto response="{{resp}}"></core-ajax>
+    <swipe-container id="container" touch-action="none">
+    <core-animated-pages transitions="cross-fade-all">
+        <template repeat="{{word in resp.words}}">
+          <section>     
+            <div layout vertical center center-justified class="fullheight">
+              {{word.original}}
+              <core-icon icon="toc" style="width: 48px; height: 48px;" on-click="{{reveal}}">
+               
+              </core-icon>
+              <p hidden>
+                {{word.translation}}
+              </p>
+             </div>
+          </section>
+       </template>
+    </core-animated-pages>
+    </swipe-container>
+  </template>
+  <script>
+    Polymer({
+      nextClick: function(event, detail, sender) {
+        sender.selectNext(true);
+      },
+      handleGestureStart: function(inEvent) {
+        console.log(inEvent)
+      },
+      reveal: function() {
+        console.log('reveal');
+      }
+    });
+  </script>
+</polymer-element>

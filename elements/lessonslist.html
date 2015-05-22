@@ -1,0 +1,34 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-ajax/core-ajax.html">
+
+<polymer-element name="menu-lessonlist" >
+  <template>
+    <core-ajax url="../json/lessonlist.json" handleAs="json" auto response="{{resp}}"></core-ajax>
+    <core-menu class='menu' on-core-select="{{selectAction}}">
+    <template repeat="{{lesson in resp.lessons}}">
+      <paper-item url="./json/{{lesson.url}}" label="{{lesson.name}}">{{lesson.name}}</paper-item>
+    </template>
+    </core-menu>
+  </template>
+  <script>
+    Polymer({
+      ready: function() {
+      },
+      selectAction: function(e, detail) {
+        if (detail.isSelected) {
+          Polymer.import(['elements/pages-words.html'], function() {
+            var container = document.querySelector('swipe-container');
+            while (container.firstChild) {
+              container.removeChild(container.firstChild);
+            }
+            var cnt = document.createElement("pages-words");
+            
+            cnt.lessonurl = detail.item.getAttribute('url');
+            container.appendChild(cnt);
+            // document.querySelector('pages-words').lessonurl = detail.item.getAttribute('url');
+          });
+        }
+      }
+    });
+  </script>
+</polymer-element>

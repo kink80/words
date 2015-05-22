@@ -1,0 +1,14 @@
+{
+  "name": "Test",
+  "description": "",
+  "homepage": "",
+  "keywords": [
+  ],
+  "author": "",
+  "private": true,
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5",
+    "core-ajax": "Polymer/core-ajax#^0.5",
+    "core-animated-pages": "Polymer/core-animated-pages#^0.5"
+  }
+}
